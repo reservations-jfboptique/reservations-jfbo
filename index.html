@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prise de Rendez-vous - JFB OPTIQUE</title>
+  
+  <style>
+    /* =========================================================================
+       1. VARIABLES DE COULEURS ET CHARTE GRAPHIQUE (JFB OPTIQUE)
+       ========================================================================= */
+    :root {
+      --primary: #0f3b5f;         /* Bleu marine profond */
+      --primary-accent: #1d70b8;  /* Bleu optique lumineux */
+      --primary-light: #eef6fc;   /* Fond bleuté doux pour les sélections */
+      --bg: #f4f7f9;              /* Fond général de la page */
+      --card-bg: #ffffff;         /* Fond blanc pur du formulaire */
+      --border: #dbe3eb;          /* Bordures fines */
+      --text: #1e293b;            /* Couleur du texte principal */
+      --text-muted: #64748b;      /* Texte secondaire et descriptifs */
+      --success-bg: #ecfdf5;      /* Vert doux pour la confirmation */
+      --success-border: #a7f3d0;
+      --success-text: #065f46;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 12px rgba(15, 59, 95, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 32px 16px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 36px 32px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+    }
+
+    /* En-tête avec Logo et Coordonnées */
+    .header-section {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .store-logo {
+      max-width: 180px;
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto 14px auto;
+      object-fit: contain;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      letter-spacing: 0.5px;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .store-info {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .store-info strong {
+      color: var(--text);
+    }
+
+    /* Formulaires */
+    .form-group {
+      margin-bottom: 22px;
+    }
+
+    label.section-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    /* Grille des prestations (2 colonnes) */
+    .service-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 520px) {
+      .service-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .service-card {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      cursor: pointer;
+      background: var(--card-bg);
+      transition: all 0.2s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .service-card:hover {
+      border-color: var(--primary-accent);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .service-card.selected {
+      border-color: var(--primary-accent);
+      background-color: var(--primary-light);
+      box-shadow: 0 0 0 2px rgba(29, 112, 184, 0.2);
+    }
+
+    .service-card h3 {
+      font-size: 0.95rem;
+      color: var(--primary);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .service-card p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.35;
+      margin-bottom: 8px;
+    }
+
+    .service-badge {
+      display: inline-block;
+      align-self: flex-start;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--primary-accent);
+      background: #e1effa;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    /* Champs de saisie */
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="date"],
+    textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      color: var(--text);
+      background: #fdfdfd;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary-accent);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(29, 112, 184, 0.15);
+    }
+
+    /* Grille des créneaux horaires */
+    .slots-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .slot-btn {
+      padding: 10px 4px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease-in-out;
+      color: var(--text);
+    }
+
+    .slot-btn:hover:not(:disabled) {
+      border-color: var(--primary-accent);
+      color: var(--primary-accent);
+      background: var(--primary-light);
+    }
+
+    .slot-btn.selected {
+      background: var(--primary-accent);
+      color: #ffffff;
+      border-color: var(--primary-accent);
+      font-weight: 600;
+    }
+
+    .slot-btn:disabled {
+      background: #f1f5f9;
+      color: #94a3b8;
+      cursor: not-allowed;
+      border-color: #e2e8f0;
+      text-decoration: line-through;
+    }
+
+    /* Bouton d'action */
+    .btn-submit {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      padding: 15px;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      background: var(--primary-accent);
+    }
+
+    .btn-submit:active:not(:disabled) {
+      transform: scale(0.99);
+    }
+
+    .btn-submit:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    .status-msg {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .alert-success {
+      background: var(--success-bg);
+      border: 1.5px solid var(--success-border);
+      color: var(--success-text);
+      padding: 20px;
+      border-radius: var(--radius-md);
+      margin-top: 20px;
+      display: none;
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- En-tête : Logo et coordonnées -->
+    <header class="header-section">
+      <img src="logo.jpg" alt="Logo JFB OPTIQUE" class="store-logo">
+      <h1>JFB OPTIQUE</h1>
+      <p class="store-info">
+        📍 7 place Saint Marc, 30400 Villeneuve-lès-Avignon<br>
+        📞 <strong>04.32.70.22.84</strong> • ✉️ <strong>jfb.optique@gmail.com</strong>
+      </p>
+    </header>
+
+    <form id="bookingForm">
+      
+      <!-- 1. Prestation -->
+      <div class="form-group">
+        <label class="section-title">👓 Motif du rendez-vous</label>
+        <div class="service-grid" id="serviceOptions"></div>
+      </div>
+
+      <!-- 2. Date -->
+      <div class="form-group">
+        <label class="section-title" for="bookingDate">📅 Date souhaitée</label>
+        <input type="date" id="bookingDate" required>
+      </div>
+
+      <!-- 3. Heure -->
+      <div class="form-group">
+        <label class="section-title">⏰ Créneau horaire disponible</label>
+        <div id="slotsStatus" class="status-msg">Veuillez d'abord sélectionner une date.</div>
+        <div class="slots-grid" id="slotsContainer"></div>
+      </div>
+
+      <!-- 4. Coordonnées -->
+      <div class="form-group">
+        <label class="section-title" for="clientName">👤 Nom et Prénom</label>
+        <input type="text" id="clientName" placeholder="Ex: Marie Dupont" required>
+      </div>
+
+      <div class="form-group">
+        <label class="section-title" for="clientEmail">✉️ Adresse E-mail</label>
+        <input type="email" id="clientEmail" placeholder="marie.dupont@email.com" required>
+      </div>
+
+      <div class="form-group">
+        <label class="section-title" for="clientPhone">📞 Téléphone</label>
+        <input type="tel" id="clientPhone" placeholder="06 12 34 56 78" required>
+      </div>
+
+      <div class="form-group">
+        <label class="section-title" for="clientNotes">📝 Remarques ou précisions (optionnel)</label>
+        <textarea id="clientNotes" rows="2" placeholder="Ex: ordonnance récente, monture cassée..."></textarea>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">Confirmer le rendez-vous</button>
+      
+      <div id="successBox" class="alert-success"></div>
+    </form>
+
+  </div>
+
+  <script>
+    // =========================================================================
+    // CONFIGURATION APPS SCRIPT
+    // =========================================================================
+    // Remplace par ton URL exacte de déploiement se terminant par /exec
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzcEKA1wV0yIG1VRY1CARRFRm1-KCxAeeBr9Upehs6_B-yPLWYDfOyFN4-I7Q9TnVkj/exec";
+
+    // 1. LES 4 MOTIFS DE CONSULTATION RÉELS (JFB OPTIQUE)
+    const SERVICES = [
+      {
+        id: "nouvel_equipement",
+        title: "Nouvel équipement",
+        subtitle: "Ordonnance < 3 ans (si > 42 ans) ou < 5 ans (si < 42 ans)",
+        duration: 60
+      },
+      {
+        id: "verification_visuelle",
+        title: "Vérification visuelle",
+        subtitle: "Contrôle de la vue et renouvellement",
+        duration: 25
+      },
+      {
+        id: "reparations_ajustages",
+        title: "Réparations / Ajustages divers",
+        subtitle: "Réglage, visserie, nettoyage ou dépannage monture",
+        duration: 15
+      },
+      {
+        id: "adaptation_lentilles",
+        title: "Adaptation lentilles",
+        subtitle: "Premier rendez-vous de conseil et manipulation",
+        duration: 30
+      }
+    ];
+
+    // 2. PLANNING D'OUVERTURE DE LA BOUTIQUE
+    // 0 = Dimanche, 1 = Lundi, 2 = Mardi, 3 = Mercredi, 4 = Jeudi, 5 = Vendredi, 6 = Samedi
+    const WEEKLY_SCHEDULE = {
+      0: [], // Dimanche : Fermé
+      1: ["14:00", "14:45", "15:30", "16:15", "17:00", "17:45", "18:15"], // Lundi : 14h - 19h
+      2: ["09:00", "09:45", "10:30", "11:15", "12:00", "14:00", "14:45", "15:30", "16:15", "17:00", "17:45", "18:15"], // Mardi : 9h - 19h
+      3: ["15:00", "15:45", "16:30", "17:15", "18:00"], // Mercredi : 15h - 19h
+      4: ["09:00", "09:45", "10:30", "11:15", "12:00", "14:00", "14:45", "15:30", "16:15", "17:00", "17:45", "18:15"], // Jeudi : 9h - 19h
+      5: ["09:00", "09:45", "10:30", "11:15", "12:00", "14:00", "14:45", "15:30", "16:15", "17:00", "17:45", "18:15"], // Vendredi : 9h - 19h
+      6: ["09:00", "09:45", "10:30", "11:15", "12:00"] // Samedi : 9h - 13h
+    };
+
+    let selectedService = SERVICES[0];
+    let selectedTime = null;
+
+    const serviceOptionsContainer = document.getElementById('serviceOptions');
+    const dateInput = document.getElementById('bookingDate');
+    const slotsContainer = document.getElementById('slotsContainer');
+    const slotsStatus = document.getElementById('slotsStatus');
+    const form = document.getElementById('bookingForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const successBox = document.getElementById('successBox');
+
+    // Bloque la sélection des dates passées
+    dateInput.min = new Date().toISOString().split('T')[0];
+
+    // Génère les cartes de motifs
+    function renderServices() {
+      serviceOptionsContainer.innerHTML = '';
+      SERVICES.forEach(service => {
+        const card = document.createElement('div');
+        card.className = `service-card ${service.id === selectedService.id ? 'selected' : ''}`;
+        card.innerHTML = `
+          <div>
+            <h3>${service.title}</h3>
+            <p>${service.subtitle}</p>
+          </div>
+          <span class="service-badge">⏱ ${service.duration} min</span>
+        `;
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          selectedService = service;
+        });
+        serviceOptionsContainer.appendChild(card);
+      });
+    }
+    renderServices();
+
+    // Récupération des créneaux lors du choix d'une date
+    dateInput.addEventListener('change', async () => {
+      const dateVal = dateInput.value;
+      if (!dateVal) return;
+
+      selectedTime = null;
+      slotsContainer.innerHTML = '';
+      slotsStatus.textContent = "Recherche des créneaux disponibles...";
+
+      try {
+        const targetUrl = `${GOOGLE_SCRIPT_URL}?date=${encodeURIComponent(dateVal)}`;
+        const response = await fetch(targetUrl, {
+          method: 'GET',
+          redirect: 'follow'
+        });
+
+        const rawText = await response.text();
+        const data = JSON.parse(rawText);
+
+        if (data.error) {
+          slotsStatus.textContent = `Erreur : ${data.error}`;
+          return;
+        }
+
+        renderSlots(data.busySlots || [], dateVal);
+
+      } catch (err) {
+        console.error("Détail de l'erreur :", err);
+        slotsStatus.textContent = "Impossible de joindre l'agenda Google.";
+      }
+    });
+
+    // Affichage des boutons d'horaires
+    function renderSlots(busySlots, selectedDateStr) {
+      slotsContainer.innerHTML = '';
+
+      const [year, month, day] = selectedDateStr.split('-').map(Number);
+      const dayOfWeek = new Date(year, month - 1, day).getDay();
+
+      const availableHours = WEEKLY_SCHEDULE[dayOfWeek] || [];
+
+      if (availableHours.length === 0) {
+        slotsStatus.textContent = "Le magasin est fermé à cette date. Veuillez choisir un autre jour.";
+        return;
+      }
+
+      slotsStatus.textContent = "";
+
+      availableHours.forEach(timeSlot => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'slot-btn';
+        btn.textContent = timeSlot;
+
+        const isBusy = busySlots.some(busy => timeSlot >= busy.start && timeSlot < busy.end);
+
+        if (isBusy) {
+          btn.disabled = true;
+          btn.title = "Ce créneau est déjà réservé";
+        } else {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedTime = timeSlot;
+          });
+        }
+
+        slotsContainer.appendChild(btn);
+      });
+    }
+
+    // Validation et envoi du rendez-vous
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if (!selectedTime) {
+        alert("Veuillez sélectionner un créneau horaire disponible.");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Enregistrement en cours...";
+
+      const payload = {
+        date: dateInput.value,
+        time: selectedTime,
+        serviceName: `${selectedService.title} (${selectedService.subtitle})`,
+        duration: selectedService.duration,
+        clientName: document.getElementById('clientName').value,
+        clientEmail: document.getElementById('clientEmail').value,
+        clientPhone: document.getElementById('clientPhone').value,
+        notes: document.getElementById('clientNotes').value
+      };
+
+      try {
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const rawText = await response.text();
+        const result = JSON.parse(rawText);
+
+        if (result.success) {
+          form.reset();
+          slotsContainer.innerHTML = '';
+          selectedTime = null;
+          successBox.style.display = 'block';
+          successBox.innerHTML = `
+            <strong>Rendez-vous confirmé avec succès !</strong><br><br>
+            • <strong>Prestation :</strong> ${payload.serviceName}<br>
+            • <strong>Date :</strong> le ${payload.date} à ${payload.time} (durée : ${selectedService.duration} min)<br><br>
+            Un courriel de confirmation détaillé avec un bouton pour l'ajouter à votre agenda vous a été envoyé à <em>${payload.clientEmail}</em>.
+          `;
+        } else {
+          alert("Erreur lors de la réservation : " + (result.error || "Veuillez réessayer."));
+        }
+      } catch (err) {
+        alert("Une erreur de communication est survenue lors de l'enregistrement.");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Confirmer le rendez-vous";
+      }
+    });
+  </script>
+</body>
+</html>
